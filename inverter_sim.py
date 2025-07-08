@@ -41,10 +41,10 @@ class InverterSimulato:
         self.velocità_nominale = 1500.0  # RPM
         
         # Parametri operativi
-        self.frequenza_uscita = 0.0     # Hz
-        self.tensione_uscita = 0.0      # V
-        self.corrente_uscita = 0.0      # A
-        self.velocita_motore = 0.0      # RPM
+        self.frequenza_uscita = 0.0    # Hz
+        self.tensione_uscita = 0.0    # V
+        self.corrente_uscita = 0.0     # A
+        self.velocita_motore = 0.0   # RPM
         self.coppia = 0.0               # Nm
         self.potenza_uscita = 0.0       # W
         self.fattore_potenza = 0.95     # PF
@@ -76,11 +76,6 @@ class InverterSimulato:
         self._frequenza_obiettivo = 0.0
         self._tensione_obiettivo = 0.0
         self._velocita_obiettivo = 0.0
-        self.frequenza_uscita = 0.0
-        self.tensione_uscita = 0.0
-        self.velocita_motore = 0.0
-        self.corrente_uscita = 0.0
-        self.potenza_uscita = 0.0
         
         # Avvia il timer per l'aggiornamento periodico
         self._aggiorna_timer = None
@@ -121,7 +116,8 @@ class InverterSimulato:
             self.stato = StatoInverter.ACCELERAZIONE
             self._frequenza_obiettivo = self.frequenza_nominale
             self._tensione_obiettivo = self.tensione_nominale
-            self._velocita_obiettivo = self.velocità_nominale * (self.frequenza_uscita / self.frequenza_nominale)
+            # Usare la frequenza nominale invece di frequenza_uscita per il calcolo iniziale
+            self._velocita_obiettivo = self.velocità_nominale * (self._frequenza_obiettivo / self.frequenza_nominale)
             self.in_marcia = True
             self.conteggio_avviamenti += 1
             return True
@@ -207,15 +203,32 @@ class InverterSimulato:
         
         # Aggiorna corrente e coppia in base al carico
         if self.frequenza_uscita > 0.1:  # Soglia per evitare divisioni per zero
-            rapporto_carico = min(1.0, 0.2 + 0.8 * (self.frequenza_uscita / self.frequenza_nominale))
-            self.corrente_uscita = self.corrente_nominale * rapporto_carico
-            self.coppia = (self.potenza_uscita * 60) / (2 * 3.14159 * self.velocita_motore) if self.velocita_motore > 0.1 else 0
+            if self.stato == StatoInverter.ACCELERAZIONE:
+                # Durante l'accelerazione, aumenta gradualmente la corrente
+                rapporto_carico = min(1.0, 0.2 + 0.8 * (self.frequenza_uscita / self.frequenza_nominale))
+                self.corrente_uscita = min(
+                    self.corrente_nominale * rapporto_carico,
+                    self.corrente_nominale * 1.2  # Limita la corrente massima al 120% del nominale
+                )
+            else:
+                # A regime, mantieni la corrente al valore nominale
+                rapporto_carico = min(1.0, 0.2 + 0.8 * (self.frequenza_uscita / self.frequenza_nominale))
+                self.corrente_uscita = self.corrente_nominale * rapporto_carico
+                
+            # Calcola la coppia solo se la velocità è sufficientemente alta
+            if self.velocita_motore > 0.1:
+                self.coppia = (self.potenza_uscita * 60) / (2 * 3.14159 * self.velocita_motore)
+            else:
+                self.coppia = 0.0
         else:
             self.corrente_uscita = 0.0
             self.coppia = 0.0
         
-        # Aggiorna potenza in uscita
-        self.potenza_uscita = self.tensione_uscita * self.corrente_uscita * self.fattore_potenza
+        # Aggiorna potenza in uscita (solo se l'inverter è in funzione)
+        if self.in_marcia:
+            self.potenza_uscita = self.tensione_uscita * self.corrente_uscita * self.fattore_potenza
+        else:
+            self.potenza_uscita = 0.0
         
         # Aggiorna temperatura (aumenta con la potenza, si raffredda a riposo)
         delta_temp = (self.potenza_uscita / 1000.0) * dt - (self.temperatura - 25.0) * 0.001 * dt
@@ -243,38 +256,52 @@ class InverterSimulato:
     
     def _controlla_allarmi(self):
         """Controlla le condizioni di allarme"""
-        # Resetta lo stato di allarme
-        self.allarme_attivo = False
-        
         # Se l'inverter è spento o in stato di pronto, non controllare gli allarmi
-        if self.stato == StatoInverter.SPENTO or (self.stato == StatoInverter.PRONTO and not self.in_marcia):
+        if self.stato == StatoInverter.SPENTO or self.stato == StatoInverter.PRONTO:
+            self.allarme_attivo = False
+            self.descrizione_allarme = "Nessun allarme"
             return
             
+        # Resetta lo stato di allarme prima di verificare le condizioni
+        self.allarme_attivo = False
+        
+        # Debug: Stampa i valori attuali per il debug
+        print(f"DEBUG - Stato: {self.stato}, In marcia: {self.in_marcia}, Corrente: {self.corrente_uscita}, Max: {self.corrente_nominale * 1.5}")
+        
         # Controlla sovracorrente (solo se l'inverter è in funzione)
         if self.in_marcia and self.corrente_uscita > self.corrente_nominale * 1.5:
+            print(f"DEBUG - Allarme sovracorrente: {self.corrente_uscita} > {self.corrente_nominale * 1.5}")
             self._aggiungi_allarme(CodiceAllarme.SOVRACORRENTE, "Sovracorrente rilevata")
         
         # Controlla sovratensione (solo se l'inverter è in funzione)
-        if self.in_marcia and self.tensione_uscita > self.tensione_nominale * 1.15:
+        if self.in_marcia and self.tensione_uscita > self.tensione_nominale * 1.15:  # +15%
+            print(f"DEBUG - Allarme sovratensione: {self.tensione_uscita} > {self.tensione_nominale * 1.15}")
             self._aggiungi_allarme(CodiceAllarme.SOVRATENSIONE, "Sovratensione rilevata")
-        
-        # Controlla sottotensione (solo se l'inverter è in funzione e la frequenza è significativa)
-        if self.in_marcia and self.frequenza_uscita > 10 and self.tensione_uscita < self.tensione_nominale * 0.7:
-            self._aggiungi_allarme(CodiceAllarme.SOTTOTENSIONE, "Sottotensione rilevata")
-        
-        # Controlla temperatura
-        if self.temperatura > 80.0:
-            self._aggiungi_allarme(CodiceAllarme.SOVRATEMPERATURA, f"Temperatura elevata: {self.temperatura:.1f}°C")
-        
+            
+        # Controlla sottotensione (solo se l'inverter è in funzione)
+        tensione_attesa = self.tensione_nominale * (self.frequenza_uscita / self.frequenza_nominale)
+        if self.in_marcia and self.frequenza_uscita > 5:  # Solo se la frequenza è significativa
+            if self.tensione_uscita < tensione_attesa * 0.8:  # -20% dalla tensione attesa
+                print(f"DEBUG - Allarme sottotensione: {self.tensione_uscita} < {tensione_attesa * 0.8} (attesa: {tensione_attesa})")
+                self._aggiungi_allarme(CodiceAllarme.SOTTOTENSIONE, "Sottotensione rilevata")
+            
+        # Controlla sovratemperatura (sempre attivo)
+        if self.temperatura > 80.0:  # °C
+            print(f"DEBUG - Allarme sovratemperatura: {self.temperatura} > 80.0")
+            self._aggiungi_allarme(CodiceAllarme.SOVRATEMPERATURA, "Sovratemperatura rilevata")
+            
+        # Controlla guasto rete (sempre attivo)
+        if not self.rete_attiva:
+            print("DEBUG - Allarme rete")
+            self._aggiungi_allarme(CodiceAllarme.GUASTO_INGRESSO, "Guasto rete di alimentazione")
+            
         # Se ci sono allarmi attivi, aggiorna lo stato
-        if any(a.attivo for a in self.allarmi):
+        if any(allarme.attivo for allarme in self.allarmi):
             self.allarme_attivo = True
-            self.descrizione_allarme = ", ".join(a.descrizione for a in self.allarmi if a.attivo)
-            self.stato = StatoInverter.ALLARME
-            self.in_marcia = False
-            self._frequenza_obiettivo = 0.0
-            self._tensione_obiettivo = 0.0
-            self._velocita_obiettivo = 0.0
+            self.descrizione_allarme = ", ".join(allarme.descrizione 
+                                              for allarme in self.allarmi 
+                                              if allarme.attivo)
+            print(f"DEBUG - Allarme attivato: {self.descrizione_allarme}")
     
     def _aggiorna_stato(self):
         """Aggiorna lo stato dell'inverter in base alle condizioni attuali"""

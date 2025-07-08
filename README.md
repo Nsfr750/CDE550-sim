@@ -2,16 +2,24 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Version](https://img.shields.io/badge/version-0.0.2-green.svg)](CHANGELOG.md)
 
 Simulatore software dell'inverter Nidec Commander CDE 550 con interfaccia grafica, sviluppato in Python con PyQt6.
+
+## Novità nella versione 0.0.2
+
+- **Localizzazione completa** in italiano dell'interfaccia utente
+- **Migliorata la gestione degli allarmi** con riduzione dei falsi positivi
+- **Ottimizzazioni delle prestazioni** durante l'avvio e la variazione di carico
+- **Documentazione aggiornata** con CHANGELOG dettagliato
 
 ## Funzionalità
 
 - Simulazione realistica del comportamento di un inverter Nidec Commander CDE 550
-- Interfaccia grafica intuitiva con PyQt6
+- Interfaccia grafica intuitiva con PyQt6 completamente localizzata in italiano
 - Comunicazione seriale tramite pyserial
 - Supporto per i principali comandi di controllo
-- Simulazione di guasti e allarmi
+- Simulazione di guasti e allarmi con gestione avanzata
 - Monitoraggio in tempo reale dei parametri
 - Log degli eventi e degli errori
 
@@ -82,9 +90,12 @@ CDE550-sim/
 ├── main.py            # Punto di ingresso dell'applicazione
 ├── inverter_sim.py    # Logica di simulazione dell'inverter
 ├── serial_handler.py  # Gestione comunicazione seriale
-├── script/            # File dell'interfaccia utente
+├── script/            # File dell'interfaccia utente e aiuto
+│   ├── help.py        # Finestra di aiuto
+│   └── version.py     # Gestione versione
 ├── requirements.txt   # Dipendenze del progetto
-└── README.md          # Questo file
+├── README.md          # Documentazione principale
+└── CHANGELOG.md      # Registro delle modifiche
 ```
 
 ## Contributi

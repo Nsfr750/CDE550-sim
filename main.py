@@ -15,7 +15,7 @@ try:
     from inverter_sim import InverterSimulato
     from serial_handler import SerialHandler
 except ImportError as e:
-    print(f"Error importing simulator components: {e}")
+    print(f"Errore importando componenti del simulatore: {e}")
     raise
 
 class SimulatorWidget(QWidget):
@@ -34,12 +34,12 @@ class SimulatorWidget(QWidget):
         left_layout = QVBoxLayout(left_panel)
         
         # Control group
-        control_group = QGroupBox("Control")
+        control_group = QGroupBox("Controllo")
         control_layout = QVBoxLayout()
         
         # Control buttons
-        self.btn_start = QPushButton("START")
-        self.btn_stop = QPushButton("STOP")
+        self.btn_start = QPushButton("AVVIA")
+        self.btn_stop = QPushButton("FERMA")
         self.btn_reset = QPushButton("RESET")
         self.btn_start.setStyleSheet("background-color: #4CAF50; color: white;")
         self.btn_stop.setStyleSheet("background-color: #f44336; color: white;")
@@ -47,7 +47,7 @@ class SimulatorWidget(QWidget):
         
         # Direction
         self.direction_combo = QComboBox()
-        self.direction_combo.addItems(["FORWARD", "REVERSE"])
+        self.direction_combo.addItems(["AVANTI", "INDIETRO"])
         
         control_layout.addWidget(self.btn_start)
         control_layout.addWidget(self.btn_stop)
@@ -57,12 +57,12 @@ class SimulatorWidget(QWidget):
         control_group.setLayout(control_layout)
         
         # Parameters group
-        param_group = QGroupBox("Parameters")
+        param_group = QGroupBox("Parametri")
         param_layout = QVBoxLayout()
         
         # Frequency
         freq_layout = QHBoxLayout()
-        freq_layout.addWidget(QLabel("Frequency (Hz):"))
+        freq_layout.addWidget(QLabel("Frequenza (Hz):"))
         self.freq_spin = QDoubleSpinBox()
         self.freq_spin.setRange(0.0, 400.0)
         self.freq_spin.setValue(50.0)
@@ -71,19 +71,19 @@ class SimulatorWidget(QWidget):
         
         # Voltage
         volt_layout = QHBoxLayout()
-        volt_layout.addWidget(QLabel("Voltage (V):"))
+        volt_layout.addWidget(QLabel("Voltaggio (V):"))
         self.volt_label = QLabel("0.0")
         volt_layout.addWidget(self.volt_label)
         
         # Current
         current_layout = QHBoxLayout()
-        current_layout.addWidget(QLabel("Current (A):"))
+        current_layout.addWidget(QLabel("Corrente (A):"))
         self.current_label = QLabel("0.0")
         current_layout.addWidget(self.current_label)
         
         # Speed
         speed_layout = QHBoxLayout()
-        speed_layout.addWidget(QLabel("Speed (RPM):"))
+        speed_layout.addWidget(QLabel("Velocità (RPM):"))
         self.speed_label = QLabel("0")
         speed_layout.addWidget(self.speed_label)
         
@@ -102,21 +102,21 @@ class SimulatorWidget(QWidget):
         right_layout = QVBoxLayout(right_panel)
         
         # Status
-        status_group = QGroupBox("Status")
+        status_group = QGroupBox("Stato")
         status_layout = QVBoxLayout()
-        self.status_label = QLabel("READY")
+        self.status_label = QLabel("PRONTO")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.status_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #4CAF50;")
         status_layout.addWidget(self.status_label)
         
         # Alarms
-        self.alarm_label = QLabel("No alarms")
+        self.alarm_label = QLabel("Nessun Allarme")
         self.alarm_label.setStyleSheet("color: #f44336;")
         status_layout.addWidget(self.alarm_label)
         
         # Temperature
         temp_layout = QHBoxLayout()
-        temp_layout.addWidget(QLabel("Temperature (°C):"))
+        temp_layout.addWidget(QLabel("Temperatura (°C):"))
         self.temp_label = QLabel("25")
         temp_layout.addWidget(self.temp_label)
         status_layout.addLayout(temp_layout)
@@ -124,7 +124,7 @@ class SimulatorWidget(QWidget):
         status_group.setLayout(status_layout)
         
         # Serial log
-        log_group = QGroupBox("Command Log")
+        log_group = QGroupBox("Log dei Comandi")
         log_layout = QVBoxLayout()
         self.log_text = QLabel()
         self.log_text.setWordWrap(True)
@@ -166,30 +166,30 @@ class SimulatorWidget(QWidget):
         
         # Update status
         if self.inverter.allarme_attivo:
-            self.status_label.setText("ALARM")
+            self.status_label.setText("ALLARME")
             self.status_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #f44336;")
             self.alarm_label.setText(self.inverter.descrizione_allarme)
         elif self.inverter.in_marcia:
-            self.status_label.setText("RUNNING")
+            self.status_label.setText("IN MARCIA")
             self.status_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #4CAF50;")
             self.alarm_label.setText("No alarms")
         else:
-            self.status_label.setText("READY")
+            self.status_label.setText("PRONTO")
             self.status_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #2196F3;")
             self.alarm_label.setText("No alarms")
             
         # Update direction
         self.direction_combo.blockSignals(True)
-        self.direction_combo.setCurrentText("FORWARD" if self.inverter.direzione == 1 else "REVERSE")
+        self.direction_combo.setCurrentText("AVANTI" if self.inverter.direzione == 1 else "INDIETRO")
         self.direction_combo.blockSignals(False)
     
     def start_inverter(self):
         self.inverter.avvia()
-        self.log_serial("Command: START")
+        self.log_serial("Command: AVVIA")
         
     def stop_inverter(self):
         self.inverter.ferma()
-        self.log_serial("Command: STOP")
+        self.log_serial("Command: FERMA")
         
     def reset_inverter(self):
         self.inverter.reset()
@@ -197,12 +197,12 @@ class SimulatorWidget(QWidget):
         
     def update_frequency(self, freq):
         self.inverter.imposta_frequenza(freq)
-        self.log_serial(f"Frequency set: {freq} Hz")
+        self.log_serial(f"Frequenza impostata: {freq} Hz")
         
     def change_direction(self, direction):
-        dir_value = 1 if direction == "FORWARD" else -1
+        dir_value = 1 if direction == "AVANTI" else -1
         self.inverter.cambia_direzione(dir_value)
-        self.log_serial(f"Direction changed to: {direction}")
+        self.log_serial(f"Direzione cambaiata a: {direction}")
     
     def log_serial(self, message):
         current_text = self.log_text.text()
@@ -215,14 +215,14 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.lang = 'en'  # Default language
-        self.setWindowTitle('Nidec CDE550 Simulator')
+        self.setWindowTitle('Simulatore Nidec CDE550')
         self.setMinimumSize(1024, 768)  # Increased default size
         
         # Initialize UI
         self.init_ui()
         
         # Show status in status bar
-        self.statusBar().showMessage('Ready')
+        self.statusBar().showMessage('Pronto')
     
     def init_ui(self):
         """Initialize the user interface."""
@@ -248,16 +248,16 @@ class MainWindow(QMainWindow):
         file_menu = menubar.addMenu('&File')
         
         # Exit action
-        exit_action = QAction('&Exit', self)
+        exit_action = QAction('&Esci', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
         
         # Help menu
-        help_menu = menubar.addMenu('&Help')
+        help_menu = menubar.addMenu('&Aiuto')
         
         # Help action
-        help_action = QAction('&Help', self)
+        help_action = QAction('&Aiuto', self)
         help_action.setShortcut('F1')
         help_action.triggered.connect(self.show_help)
         help_menu.addAction(help_action)
@@ -266,7 +266,7 @@ class MainWindow(QMainWindow):
         help_menu.addSeparator()
         
         # About action
-        about_action = QAction('&About', self)
+        about_action = QAction('&Informazioni', self)
         about_action.triggered.connect(self.show_about)
         help_menu.addAction(about_action)
         
@@ -278,7 +278,7 @@ class MainWindow(QMainWindow):
         # Separator
         help_menu.addSeparator()
         # Check for Updates action
-        update_action = QAction('Check for &Updates', self)
+        update_action = QAction('Controllo Aggiornamenti', self)
         update_action.triggered.connect(self.check_updates)
         help_menu.addAction(update_action)
     

@@ -67,6 +67,7 @@ Simulatore software dell'inverter Nidec Commander CDE 550 con interfaccia grafic
    - Controlli di simulazione
 
 3. Per la connessione seriale:
+   - Menù Connessione -> Connetti
    - Seleziona la porta COM desiderata
    - Imposta la velocità di comunicazione (baud rate)
    - Clicca su "Connetti"
@@ -87,15 +88,16 @@ Simulatore software dell'inverter Nidec Commander CDE 550 con interfaccia grafic
 
 ```
 CDE550-sim/
-├── main.py            # Punto di ingresso dell'applicazione
-├── inverter_sim.py    # Logica di simulazione dell'inverter
-├── serial_handler.py  # Gestione comunicazione seriale
-├── script/            # File dell'interfaccia utente e aiuto
-│   ├── help.py        # Finestra di aiuto
-│   └── version.py     # Gestione versione
-├── requirements.txt   # Dipendenze del progetto
-├── README.md          # Documentazione principale
-└── CHANGELOG.md      # Registro delle modifiche
+├── main.py              # Punto di ingresso dell'applicazione
+├── inverter_sim.py      # Logica di simulazione dell'inverter
+├── serial_handler.py    # Gestione comunicazione seriale
+├── script/              # File dell'interfaccia utente e aiuto
+│   ├── help.py          # Finestra di aiuto
+│   ├── serial_dialog.py # Finestra di connessione seriale
+│   └── version.py       # Gestione versione
+├── requirements.txt     # Dipendenze del progetto
+├── README.md            # Documentazione principale
+└── CHANGELOG.md         # Registro delle modifiche
 ```
 
 ## Contributi

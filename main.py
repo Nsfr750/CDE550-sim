@@ -253,6 +253,20 @@ class MainWindow(QMainWindow):
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
         
+        # Connection menu
+        connection_menu = menubar.addMenu('&Connessione')
+        
+        # Connect action
+        self.connect_action = QAction('&Connetti', self)
+        self.connect_action.triggered.connect(self.show_serial_connection)
+        connection_menu.addAction(self.connect_action)
+        
+        # Disconnect action
+        self.disconnect_action = QAction('&Disconnetti', self)
+        self.disconnect_action.setEnabled(False)
+        self.disconnect_action.triggered.connect(self.disconnect_serial)
+        connection_menu.addAction(self.disconnect_action)
+        
         # Help menu
         help_menu = menubar.addMenu('&Aiuto')
         
@@ -314,6 +328,30 @@ class MainWindow(QMainWindow):
             check_for_updates(parent=self, current_version=get_version())
         except ImportError as e:
             QMessageBox.critical(self, 'Error', f'Could not check for updates: {str(e)}')
+    
+    def show_serial_connection(self):
+        """Show the serial connection dialog."""
+        try:
+            from script.serial_dialog import SerialDialog
+            dialog = SerialDialog(self)
+            if dialog.exec():
+                port = dialog.get_port()
+                baudrate = dialog.get_baudrate()
+                if self.simulator.serial_handler.connect(port, baudrate):
+                    self.statusBar().showMessage(f'Connesso a {port} @ {baudrate} baud')
+                    self.connect_action.setEnabled(False)
+                    self.disconnect_action.setEnabled(True)
+                else:
+                    QMessageBox.critical(self, 'Errore', 'Impossibile connettersi alla porta seriale')
+        except ImportError as e:
+            QMessageBox.critical(self, 'Errore', f'Impossibile caricare la finestra di connessione: {str(e)}')
+    
+    def disconnect_serial(self):
+        """Disconnect from the serial port."""
+        self.simulator.serial_handler.disconnect()
+        self.statusBar().showMessage('Disconnesso')
+        self.connect_action.setEnabled(True)
+        self.disconnect_action.setEnabled(False)
     
     def closeEvent(self, event):
         """Handle the window close event."""

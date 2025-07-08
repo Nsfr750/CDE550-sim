@@ -54,4 +54,4 @@ Questo è un simulatore software dell'inverter Nidec Commander CDE 550 con inter
 
 ## Licenza
 
-Questo progetto è rilasciato sotto licenza MIT.
+Questo progetto è rilasciato sotto licenza GPLv3.

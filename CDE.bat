@@ -15,7 +15,7 @@
 --windows-company-name=Tuxxle ^
 --copyright="(c)2025 by Nsfr750" ^
 --windows-product-name="CDE550 Simulator" ^
---windows-product-version=0.0.1 ^
---windows-file-version=0.0.1 ^
+--windows-product-version=0.0.2 ^
+--windows-file-version=0.0.2 ^
 x:/GitHub/CDE550-sim/main.py
 @pause

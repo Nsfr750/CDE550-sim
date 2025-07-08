@@ -23,14 +23,14 @@ class HelpWindow(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Nidec CDE550 Simulator - Help")
+        self.setWindowTitle("Nidec CDE550 Simulatore - Aiuto")
         self.setMinimumSize(900, 700)
         self.setWindowModality(Qt.WindowModality.ApplicationModal)
         
         main_layout = QVBoxLayout()
         
         # Title
-        title = QLabel("Nidec CDE550 Simulator - Help")
+        title = QLabel("Nidec CDE550 Simulatore - Aiuto")
         title_font = QFont()
         title_font.setBold(True)
         title_font.setPointSize(16)
@@ -45,7 +45,7 @@ class HelpWindow(QDialog):
         main_layout.addWidget(self.browser)
         
         # Close button
-        close_btn = QPushButton('Close')
+        close_btn = QPushButton('Chiudi')
         close_btn.clicked.connect(self.close)
         main_layout.addWidget(close_btn, alignment=Qt.AlignmentFlag.AlignRight)
         
@@ -102,7 +102,7 @@ class HelpWindow(QDialog):
                     padding: 12px 16px;
                     margin: 15px 0;
                     border-radius: 4px;
-                    ccolor: #fafafa;
+                    color: #fafafa;
                 }
                 code { 
                     padding: 2px 6px; 
@@ -137,94 +137,94 @@ class HelpWindow(QDialog):
             </style>
         </head>
         <body>
-            <h1>Nidec CDE550 Simulator - Help</h1>
+            <h1>Nidec CDE550 Simulatore - Aiuto</h1>
             
             <div class="note">
-                <p>Welcome to the Nidec CDE550 Simulator. This application allows you to simulate and test the Nidec CDE550 inverter functionality.</p>
+                <p>Benvenuto nel Simulatore Nidec CDE550. Questa applicazione ti permette di simulare e testare le funzionalità dell'inverter Nidec CDE550.</p>
             </div>
             
-            <h2>Getting Started</h2>
-            <p>The simulator provides a virtual interface to the Nidec CDE550 inverter with the following features:</p>
+            <h2>Per iniziare</h2>
+            <p>Il simulatore fornisce un'interfaccia virtuale per l'inverter Nidec CDE550 con le seguenti funzionalità:</p>
             <ul>
-                <li>Start/Stop control of the inverter</li>
-                <li>Frequency adjustment from 0 to 400 Hz</li>
-                <li>Direction control (Forward/Reverse)</li>
-                <li>Real-time monitoring of output parameters</li>
-                <li>Alarm simulation and monitoring</li>
+                <li>Avvio/Arresto dell'inverter</li>
+                <li>Regolazione della frequenza da 0 a 400 Hz</li>
+                <li>Controllo della direzione (Avanti/Indietro)</li>
+                <li>Monitoraggio in tempo reale dei parametri di uscita</li>
+                <li>Simulazione e monitoraggio degli allarmi</li>
             </ul>
             
-            <h2>User Interface</h2>
+            <h2>Interfaccia utente</h2>
             
-            <h3>Control Panel</h3>
-            <p>The left panel contains all the control elements:</p>
+            <h3>Pannello di controllo</h3>
+            <p>Il pannello di sinistra contiene tutti gli elementi di controllo:</p>
             <ul>
-                <li><strong>START</strong> - Starts the inverter</li>
-                <li><strong>STOP</strong> - Stops the inverter</li>
-                <li><strong>RESET</strong> - Resets the inverter state</li>
-                <li><strong>Direction</strong> - Toggle between Forward and Reverse operation</li>
-                <li><strong>Frequency</strong> - Set the output frequency (0.0-400.0 Hz)</li>
+                <li><strong>AVVIO</strong> - Avvia l'inverter</li>
+                <li><strong>FERMO</strong> - Arresta l'inverter</li>
+                <li><strong>RESET</strong> - Reimposta lo stato dell'inverter</li>
+                <li><strong>Direzione</strong> - Passa tra funzionamento Avanti e Indietro</li>
+                <li><strong>Frequenza</strong> - Imposta la frequenza di uscita (0,0-400,0 Hz)</li>
             </ul>
             
-            <h3>Status Panel</h3>
-            <p>The right panel displays the current status and parameters:</p>
+            <h3>Pannello di stato</h3>
+            <p>Il pannello di destra mostra lo stato corrente e i parametri:</p>
             <ul>
-                <li><strong>Status</strong> - Current state (READY, RUNNING, ALARM)</li>
-                <li><strong>Alarms</strong> - Displays active alarms (if any)</li>
-                <li><strong>Parameters</strong> - Shows real-time values for:
+                <li><strong>Stato</strong> - Stato attuale (PRONTO, IN FUNZIONE, ALLARME)</li>
+                <li><strong>Allarmi</strong> - Mostra gli allarmi attivi (se presenti)</li>
+                <li><strong>Parametri</strong> - Mostra i valori in tempo reale di:
                     <ul>
-                        <li>Output Voltage (V)</li>
-                        <li>Output Current (A)</li>
-                        <li>Motor Speed (RPM)</li>
-                        <li>Temperature (°C)</li>
+                        <li>Tensione di uscita (V)</li>
+                        <li>Corrente di uscita (A)</li>
+                        <li>Velocità motore (giri/min)</li>
+                        <li>Temperatura (°C)</li>
                     </ul>
                 </li>
-                <li><strong>Command Log</strong> - Shows the history of commands and state changes</li>
+                <li><strong>Log comandi</strong> - Mostra la cronologia dei comandi e dei cambiamenti di stato</li>
             </ul>
             
-            <h2>Menu Options</h2>
+            <h2>Opzioni del menu</h2>
             
-            <h3>File Menu</h3>
+            <h3>Menu File</h3>
             <ul>
-                <li><strong>Exit</strong> - Close the application</li>
+                <li><strong>Esci</strong> - Chiudi l'applicazione</li>
             </ul>
             
-            <h3>Help Menu</h3>
+            <h3>Menu Aiuto</h3>
             <ul>
-                <li><strong>Help</strong> - Show this help documentation</li>
-                <li><strong>About</strong> - Show application information</li>
-                <li><strong>Sponsor</strong> - Information about sponsors</li>
-                <li><strong>Check for Updates</strong> - Check for application updates</li>
+                <li><strong>Aiuto</strong> - Mostra questa documentazione</li>
+                <li><strong>Informazioni</strong> - Mostra le informazioni sull'applicazione</li>
+                <li><strong>Sponsor</strong> - Informazioni sugli sponsor</li>
+                <li><strong>Controlla aggiornamenti</strong> - Verifica la presenza di aggiornamenti</li>
             </ul>
             
             <div class="warning">
-                <h3>Important Notes</h3>
+                <h3>Note importanti</h3>
                 <ul>
-                    <li>This is a simulation tool and does not connect to real hardware</li>
-                    <li>All parameters shown are simulated values</li>
-                    <li>Use this tool for testing and development purposes only</li>
+                    <li>Questo è uno strumento di simulazione e non si collega ad hardware reale</li>
+                    <li>Tutti i parametri mostrati sono valori simulati</li>
+                    <li>Utilizzare questo strumento solo per scopi di test e sviluppo</li>
                 </ul>
             </div>
             
             <div class="danger">
-                <h3>Safety Information</h3>
-                <p>When working with real Nidec CDE550 inverters:</p>
+                <h3>Informazioni sulla sicurezza</h3>
+                <p>Quando si lavora con veri inverter Nidec CDE550:</p>
                 <ul>
-                    <li>Always follow the manufacturer's safety guidelines</li>
-                    <li>Ensure proper grounding and electrical connections</li>
-                    <li>Disconnect power before performing any maintenance</li>
-                    <li>Only qualified personnel should service the equipment</li>
+                    <li>Seguire sempre le linee guida sulla sicurezza del produttore</li>
+                    <li>Assicurarsi una corretta messa a terra e connessioni elettriche</li>
+                    <li>Disconnettere l'alimentazione prima di eseguire qualsiasi manutenzione</li>
+                    <li>Solo personale qualificato dovrebbe eseguire interventi sull'apparecchiatura</li>
                 </ul>
             </div>
             
-            <h2>Keyboard Shortcuts</h2>
+            <h2>Scorciatoie da tastiera</h2>
             <ul>
-                <li><span class="key">F1</span> - Show this help</li>
-                <li><span class="key">Ctrl+Q</span> - Exit application</li>
+                <li><span class="key">F1</span> - Mostra questo aiuto</li>
+                <li><span class="key">Ctrl+Q</span> - Esci dall'applicazione</li>
             </ul>
             
             <div class="note" style="margin-top: 30px;">
-                <p>For additional support or to report issues, please visit our <a href="https://github.com/Nsfr750/CDE550-sim">GitHub repository</a>.</p>
-                <p>CDE550 Simulator &copy; 2025 by Nsfr750 - All rights reserved</p>
+                <p>Per ulteriore supporto o per segnalare problemi, visita il nostro <a href="https://github.com/Nsfr750/CDE550-sim">repository GitHub</a>.</p>
+                <p>Simulatore Commander CDE550 &copy; 2025 di Nsfr750 - Tutti i diritti riservati</p>
             </div>
         </body>
         </html>

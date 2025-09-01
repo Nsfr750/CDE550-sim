@@ -16,7 +16,7 @@ Welcome to the CDE550-sim documentation! This documentation will help you get st
 
 ## Overview
 
-CDE550-sim is a simulation tool designed for [brief description of what the software does].
+CDE550-sim is a simulation tool designed for testing the Nidec CDE550.
 
 ## Quick Start
 
